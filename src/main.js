@@ -10,10 +10,10 @@ import { setupStoreSubscriber } from './store/subscriber';
 
 require('./store/subscriber');
 
-// axios.defaults.baseURL = "http://127.0.0.1:8000/api";
-axios.defaults.baseURL = "https://dev.logiclabpro.xyz/api";
-// Vue.prototype.$appURL = "http://127.0.0.1:8000"
-Vue.prototype.$appURL = "https://dev.logiclabpro.xyz"
+axios.defaults.baseURL = "http://127.0.0.1:8000/api";
+// axios.defaults.baseURL = "https://dev.logiclabpro.xyz/api";
+Vue.prototype.$appURL = "http://127.0.0.1:8000"
+// Vue.prototype.$appURL = "https://dev.logiclabpro.xyz"
 
 Vue.use(VueRouter);
 

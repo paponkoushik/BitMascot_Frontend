@@ -9,7 +9,7 @@ export default {
         signupFailed: false,
         refreshFailed: false,
         otpRequired: false,
-        errors: []
+        errors: [],
     },
     getters: {
         authenticated(state) {
@@ -37,7 +37,7 @@ export default {
         SET_LOGIN_FAILED(state, value) {
             state.loginFailed = value;
         },
-        SET_SIGNUP_FAILED(state, value) {
+        SET_SIGNUP_STATUS(state, value) {
             state.signupFailed = value.bool;
             state.errors = value.errors;
         },
@@ -90,23 +90,26 @@ export default {
 
 
 
-        async verifyOTP({ dispatch, commit }, { email, otp }) {
-            try {
-                let response = await axios.post('auth/verify-otp', { email, otp });
-                // OTP verification successful, proceed with authentication
-                return dispatch('attempt', response.data.token);
-            } catch (error) {
-                // Handle OTP verification failure
-                console.error('OTP verification failed:', error);
-            }
-        },
+        // async verifyOTP({ dispatch, commit }, { email, otp }) {
+        //     try {
+        //         let response = await axios.post('auth/verify-otp', { email, otp });
+        //         // OTP verification successful, proceed with authentication
+        //         return dispatch('attempt', response.data.token);
+        //     } catch (error) {
+        //         // Handle OTP verification failure
+        //         console.error('OTP verification failed:', error);
+        //     }
+        // },
 
-        async register({ dispatch, commit }, credentials) {
+        async register({ commit }, credentials) {
             try {
                 let response = await axios.post('auth/signup', credentials)
-                return dispatch('attempt', response.data.token);
+                console.log(response)
             } catch (error) {
-                commit('SET_SIGNUP_FAILED', {bool: true, errors: error.response?.data?.errors})
+                commit('SET_SIGNUP_STATUS', {
+                    bool: true,
+                    errors: error.response?.data?.errors,
+                })
             }
         },
 
