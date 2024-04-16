@@ -1,7 +1,23 @@
 <template>
   <div class="login-container">
-
-    <div class="login-form">
+    <div v-if="otpRequired" class="otp-section">
+      <h3>OTP Verification</h3>
+      <p>An OTP is required for login.</p>
+      <form>
+        <div class="form-group">
+          <label for="otp">OTP:</label>
+          <input type="text" id="otp" v-model="otp" placeholder="Password" required />
+        </div>
+        <button @click.prevent="submitOTP">Submit OTP</button>
+      </form>
+      <div v-if="countdown > 0" class="countdown">
+        OTP expires in: {{ formattedCountdown }}
+      </div>
+      <div v-else class="countdown-expired">
+        OTP has expired. Please request a new OTP.
+      </div>
+    </div>
+    <div v-else class="login-form">
       <h2>Login</h2>
       <form>
         <div v-if="loginFailed" class="alert alert-danger" role="alert">
@@ -23,41 +39,71 @@
 </template>
 
 <script>
-import {mapActions, mapState} from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "Login",
   data() {
     return {
       user: {},
-    }
+      otp: "",
+      countdown: 300,
+    };
   },
   computed: {
-    ...mapState('Auth', ['loginFailed', 'refreshFailed']),
+    // refreshFailed
+    ...mapState("Auth", ["loginFailed", "otpRequired", "otpVerified"]),
+
+    formattedCountdown() {
+      const minutes = Math.floor(this.countdown / 60);
+      const seconds = this.countdown % 60;
+      return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+    },
   },
   mounted() {
-    if (this.$store.state["Auth/token"] !== '') {
-      this.refresh(this.$store.state["Auth/token"]).then(() => {
-        if (! this.refreshFailed) {
-          this.$router.replace({name: 'inventories'})
-        }
-      })
-    }
+    // this.startCountdown();
+    // if (this.$store.state["Auth/token"] !== "") {
+    //   this.refresh(this.$store.state["Auth/token"]).then(() => {
+    //     if (!this.refreshFailed) {
+    //       this.$router.replace({ name: "inventories" });
+    //     }
+    //   });
+    // }
   },
   methods: {
     ...mapActions({
-      login: 'Auth/login',
-      refresh: 'Auth/refresh'
+      login: "Auth/login",
+      verifyOTP: "Auth/verifyOTP",
+      // refresh: "Auth/refresh",
     }),
     submit() {
       this.login(this.user).then(() => {
-        if (! this.loginFailed) {
-          this.$router.replace({name: 'inventories'})
+        if (!this.loginFailed) {
+          this.startCountdown();
         }
       });
-    }
-  }
-}
+    },
+    submitOTP() {
+      this.verifyOTP({email: this.user.email, otp: this.otp}).then(() => {
+        if (this.otpVerified) {
+          this.$router.replace({ name: "profile" });
+        }
+      });
+    },
+    startCountdown() {
+      this.countdownInterval = setInterval(() => {
+        if (this.countdown > 0) {
+          this.countdown--;
+        } else {
+          clearInterval(this.countdownInterval);
+        }
+      }, 1000);
+    },
+  },
+  beforeDestroy() {
+    clearInterval(this.countdownInterval);
+  },
+};
 </script>
 
 <style scoped>
@@ -66,9 +112,6 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
-}
-h2 {
-  text-align: center;
 }
 
 .login-form {
@@ -110,19 +153,9 @@ button {
   font-weight: bold;
 }
 
-.bottom-links a {
-  text-decoration: none;
-  color: #1da1f2;
-}
-
 .register-link {
   margin-top: 15px;
   text-align: center;
-  color: #1da1f2;
-}
-
-.register-link router-link {
-  text-decoration: none;
   color: #1da1f2;
 }
 
@@ -136,5 +169,24 @@ button {
   .login-form {
     width: 90%;
   }
+}
+
+.otp-section {
+  max-width: 400px;
+  width: 100%;
+  padding: 20px;
+  border: 1px solid #1da1f2;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.countdown {
+  margin-top: 15px;
+}
+
+.countdown-expired {
+  margin-top: 15px;
+  color: red;
 }
 </style>

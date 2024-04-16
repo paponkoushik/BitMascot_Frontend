@@ -1,12 +1,13 @@
 import Login from "../components/Auth/Login";
 import store from "../store/index"
 import Register from "../components/Auth/Register.vue";
-import Inventories from "../components/Inventories/Inventories.vue";
+// import Inventories from "../components/Inventories/Inventories.vue";
 import EditInventory from "../components/Inventories/EditInventory.vue";
 import AddInventory from "../components/Inventories/AddInventory.vue";
 import Items from "../components/Items/Items.vue";
 import AddItem from "../components/Items/AddItem.vue";
 import EditItem from "../components/Items/EditItem.vue";
+import Profile from "../components/Profile/Profile.vue";
 
 export const routes = [
   {
@@ -37,10 +38,15 @@ export const routes = [
   },
 
   {
-    path: '/inventories',
-    name: 'inventories',
-    component: Inventories,
+    path: '/profile',
+    name: 'profile',
+    component: Profile,
     beforeEnter: (to, from, next) => {
+      // if (store.getters['Auth/isAdmin']) {
+      //   return next({
+      //     name: 'userList'
+      //   });
+      // }
       if (!store.getters['Auth/authenticated']) {
         return next({
           name: 'login'

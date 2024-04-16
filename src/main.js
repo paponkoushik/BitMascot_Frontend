@@ -6,7 +6,7 @@ import store from "./store/index";
 import "bootstrap/dist/css/bootstrap.min.css";
 import '@fortawesome/fontawesome-free/css/all.css';
 import axios from "axios";
-import { setupStoreSubscriber } from './store/subscriber';
+// import { setupStoreSubscriber } from './store/subscriber';
 
 require('./store/subscriber');
 
@@ -23,7 +23,7 @@ const router = new VueRouter({
   routes,
   mode:'history'
 });
-setupStoreSubscriber(router);
+
 store.dispatch('Auth/attempt', localStorage.getItem('token')).then(() => {
   new Vue({
     render: h => h(App),
@@ -31,4 +31,3 @@ store.dispatch('Auth/attempt', localStorage.getItem('token')).then(() => {
     store
   }).$mount('#app')
 })
-

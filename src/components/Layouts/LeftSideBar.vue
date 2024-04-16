@@ -6,7 +6,7 @@
           <div class="col">
             <div class="d-flex align-items-center">
               <img src="../../assets/logo.png" alt="Logo" style="max-height: 40px;">
-              <h3 class="ml-2 mb-0">Admin Dashboard</h3>
+              <h3 class="ml-2 mb-0">User Portal</h3>
             </div>
           </div>
           <div class="col text-right">
@@ -18,11 +18,13 @@
 
     <div class="sidebar">
       <ul class="nav flex-column">
-        <li class="nav-item" v-for="(item, index) in sidebarItems" :key="index">
-          <router-link :to="item.link" class="nav-link" :class="{ 'active': isItemSelected(item.link) }">
-            <i :class="item.icon"></i>
-            {{ item.title }}
-          </router-link>
+        <li class="nav-item" v-for="(item, index) in sidebarItems" :key="index" >
+          <template v-if="item.show">
+            <router-link :to="item.link" class="nav-link" :class="{ 'active': isItemSelected(item.link) }">
+              <i :class="item.icon"></i>
+              {{ item.title }}
+            </router-link>
+          </template>
         </li>
       </ul>
     </div>
@@ -36,8 +38,9 @@ export default {
   data() {
     return {
       sidebarItems: [
-        { title: 'Inventory', link: '/inventories', icon: 'fas fa-warehouse' },
-        { title: 'Item', link: '/items', icon: 'fas fa-box' },
+        { title: 'Profile Page', link: '/profile', icon: 'fas fa-warehouse', show: ! this.$store.getters['Auth/isAdmin']},
+        { title: 'Change Password', link: '/change-password', icon: 'fas fa-box', show: ! this.$store.getters['Auth/isAdmin'] },
+        { title: 'User List', link: '/users', icon: 'fas fa-box', show: this.$store.getters['Auth/isAdmin'] },
       ]
     };
   },
@@ -53,6 +56,7 @@ export default {
 
     logout() {
       this.logoutAction()
+      this.$router.push('/')
     },
     isItemSelected(link) {
       return this.$route.path === link || this.$route.path.startsWith(link + '/');
