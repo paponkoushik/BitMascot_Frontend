@@ -1,13 +1,13 @@
 import Login from "../components/Auth/Login";
 import store from "../store/index"
 import Register from "../components/Auth/Register.vue";
-// import Inventories from "../components/Inventories/Inventories.vue";
 import EditInventory from "../components/Inventories/EditInventory.vue";
 import AddInventory from "../components/Inventories/AddInventory.vue";
 import Items from "../components/Items/Items.vue";
 import AddItem from "../components/Items/AddItem.vue";
 import EditItem from "../components/Items/EditItem.vue";
 import Profile from "../components/Profile/Profile.vue";
+import ChangePassword from "../components/Profile/ChangePassword.vue";
 
 export const routes = [
   {
@@ -47,7 +47,7 @@ export const routes = [
       //     name: 'userList'
       //   });
       // }
-      if (!store.getters['Auth/authenticated']) {
+      if (!store.getters['Auth/authenticated'] && ! store.getters['Auth/isAdmin']) {
         return next({
           name: 'login'
         });
@@ -56,11 +56,11 @@ export const routes = [
     }
   },
   {
-    path: '/inventories/add',
-    name: 'add_inventory',
-    component: AddInventory,
+    path: '/change-password',
+    name: 'ChangePassword',
+    component: ChangePassword,
     beforeEnter: (to, from, next) => {
-      if (!store.getters['Auth/authenticated']) {
+      if (!store.getters['Auth/authenticated'] && ! store.getters['Auth/isAdmin']) {
         return next({
           name: 'login'
         });
