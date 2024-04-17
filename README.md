@@ -1,4 +1,4 @@
-# Inventory Management Frontend
+# BitMascot Frontend
 ## Use Node Version
 ```
 12.14.1 or any 12
