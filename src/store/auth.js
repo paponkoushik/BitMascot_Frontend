@@ -41,7 +41,7 @@ export default {
         },
         SET_USER_INFO(state, data) {
             state.user = data ? data.data[0] : null
-            state.isAdmin = data.data[0].is_admin
+            state.isAdmin = data ? data.data[0].is_admin : null
         },
         SET_LOGIN_FAILED(state, value) {
             state.loginFailed = value;
@@ -141,6 +141,7 @@ export default {
             return axios.post('auth/logout').then(() => {
                 commit('SET_TOKEN', null)
                 commit('SET_USER_INFO', null)
+                commit('SET_OTP_REQUIRED', false);
             })
         },
 

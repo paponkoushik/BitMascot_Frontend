@@ -37,17 +37,27 @@ import {mapActions} from "vuex";
 export default {
   data() {
     return {
-      sidebarItems: [
-        { title: 'Profile Page', link: '/profile', icon: 'fas fa-warehouse', show: ! this.$store.getters['Auth/isAdmin']},
-        { title: 'Change Password', link: '/change-password', icon: 'fas fa-box', show: ! this.$store.getters['Auth/isAdmin'] },
-        { title: 'User List', link: '/users', icon: 'fas fa-box', show: this.$store.getters['Auth/isAdmin'] },
-      ]
+      // sidebarItems: [
+      //   { title: 'Profile Page', link: '/profile', icon: 'fas fa-warehouse', show: ! this.$store.getters['Auth/isAdmin']},
+      //   { title: 'Change Password', link: '/change-password', icon: 'fas fa-box', show: ! this.$store.getters['Auth/isAdmin'] },
+      //   { title: 'User List', link: '/users', icon: 'fas fa-box', show: this.$store.getters['Auth/isAdmin'] },
+      // ]
     };
   },
   computed: {
     store() {
       return this.$store;
     },
+    sidebarItems() {
+      return [
+        { title: 'Profile Page', link: '/profile', icon: 'fas fa-warehouse', show: ! this.$store.getters['Auth/isAdmin']},
+        { title: 'Change Password', link: '/change-password', icon: 'fas fa-box', show: ! this.$store.getters['Auth/isAdmin'] },
+        { title: 'User List', link: '/users', icon: 'fas fa-box', show: this.$store.getters['Auth/isAdmin'] },
+      ]
+    }
+  },
+  created() {
+    console.log(this.$store.getters['Auth/isAdmin'])
   },
   methods: {
     ...mapActions({
@@ -55,8 +65,11 @@ export default {
     }),
 
     logout() {
-      this.logoutAction()
-      this.$router.push('/')
+      this.logoutAction().then(() => {
+        this.$router.replace({
+          name: 'login'
+        })
+      });
     },
     isItemSelected(link) {
       return this.$route.path === link || this.$route.path.startsWith(link + '/');

@@ -90,7 +90,7 @@
                 <label>ID:</label>
               </div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-6" v-if="store.getters['Auth/user'].id_verification">
               <div class="form-group">
                 <button class="btn btn-primary" @click.prevent="downloadFile(store.getters['Auth/user'].id_verification)">
                   <i class="fas fa-download"></i>
@@ -108,10 +108,11 @@
 
 <script>
 
-import axios from "axios";
+import {FileDownloadMixin} from "../../Mixins/FileDownloadMixin";
 
 export default {
   name: "Profile",
+  mixins: [FileDownloadMixin],
   data() {
     return {
       profile: {
@@ -122,8 +123,6 @@ export default {
         email: 'john@example.com',
         id: '123456789'
       },
-      // fileUrl: 'http://127.0.0.1:8000/storage/avatar/MXmlYibyzCtIR6fMCXMuevrWu6vxhodAWEVQ24u7.pdf',
-      fileUrl: 'https://compote.slate.com/images/22ce4663-4205-4345-8489-bc914da1f272.jpeg?crop=1560%2C1040%2Cx0%2Cy0',
     };
   },
   computed: {
@@ -131,28 +130,6 @@ export default {
       return this.$store;
     },
   },
-  methods: {
-    async downloadFile(filePath) {
-      try {
-        const filename = filePath.split('/').pop();
-        console.log(filename)
-
-        const response = await axios.get(`/download-file/${filename}`, {
-          responseType: 'blob',
-        });
-
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', filename);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } catch (error) {
-        console.error('Error downloading file:', error);
-      }
-    }
-  }
 }
 </script>
 

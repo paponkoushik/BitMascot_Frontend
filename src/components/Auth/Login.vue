@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import {mapActions, mapState} from "vuex";
 
 export default {
   name: "Login",
@@ -52,23 +52,13 @@ export default {
   },
   computed: {
     // refreshFailed
-    ...mapState("Auth", ["loginFailed", "otpRequired", "otpVerified"]),
+    ...mapState("Auth", ["loginFailed", "otpRequired", "otpVerified", "isAdmin"]),
 
     formattedCountdown() {
       const minutes = Math.floor(this.countdown / 60);
       const seconds = this.countdown % 60;
       return `${minutes}:${seconds.toString().padStart(2, "0")}`;
     },
-  },
-  mounted() {
-    // this.startCountdown();
-    // if (this.$store.state["Auth/token"] !== "") {
-    //   this.refresh(this.$store.state["Auth/token"]).then(() => {
-    //     if (!this.refreshFailed) {
-    //       this.$router.replace({ name: "inventories" });
-    //     }
-    //   });
-    // }
   },
   methods: {
     ...mapActions({
@@ -86,7 +76,7 @@ export default {
     submitOTP() {
       this.verifyOTP({email: this.user.email, otp: this.otp}).then(() => {
         if (this.otpVerified) {
-          this.$router.replace({ name: "profile" });
+          this.isAdmin ? this.$router.replace({ name: "users" }) : this.$router.replace({ name: "profile" });
         }
       });
     },
